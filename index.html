@@ -1,12 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Activities</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+    direction: rtl;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+    color: white;
+  }
+  .header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  .header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+  }
+  .quizzes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .quiz-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+  }
+  .quiz-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  }
+  .quiz-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+  }
+  .quiz-title {
+    font-size: 1.4em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #667eea;
+  }
+  .quiz-description {
+    font-size: 0.95em;
+    color: #666;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  .quiz-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  .quiz-link:hover {
+    opacity: 0.9;
+  }
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.8em; }
+    .quizzes-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <h1>Welcome to the Quiz</h1>
-    <p>This is a placeholder for the quiz content.</p>
+
+<div class="container">
+  <div class="header">
+    <h1>📚 שאלונים אינטראקטיביים</h1>
+    <p>בחרו שאלון ותחילו ללמוד!</p>
+  </div>
+
+  <div class="quizzes-grid">
+    <a href="there_is_there_are_activity-1.html" class="quiz-card">
+      <div class="quiz-icon">🏠</div>
+      <div class="quiz-title">There Is / There Are</div>
+      <div class="quiz-description">שאלון אינטראקטיביים ללימוד ההבדלים בין There Is ל-There Are.</div>
+      <div class="quiz-link">→ התחילו</div>
+    </a>
+  </div>
+</div>
+
 </body>
 </html>
