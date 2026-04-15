@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>There Is / There Are - Interactive Activity</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600&display=swap');
+
+  :root {
+    --coral: #FF8A80;
+    --green: #69DB7C;
+    --dark: #2D3436;
+    --bg: #F0F7FF;
+    --card: #FFFFFF;
+    --correct-bg: #E8F8F0;
+    --wrong-bg: #FFF0EE;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+  body {
+    font-family: 'Fredoka', 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 20px;
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    direction: ltr;
+    position: relative;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 750px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+    -webkit-animation: slideDown 0.6s ease;
+    animation: slideDown 0.6s ease;
+  }
+
+  @-webkit-keyframes slideDown {
+    from { opacity: 0; -webkit-transform: translateY(-30px); }
+    to { opacity: 1; -webkit-transform: translateY(0); }
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+
+  .header h1 span {
+    background: -webkit-linear-gradient(315deg, #6C5CE7, #0984E3);
+    background: linear-gradient(135deg, #6C5CE7, #0984E3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header p {
+    font-family: 'Rubik', -apple-system, sans-serif;
+    color: #636E72;
+    font-size: 1em;
+    direction: rtl;
+  }
+
+  .help-box {
+    background: -webkit-linear-gradient(315deg, #DFE6FF 0%, #F0E6FF 100%);
+    background: linear-gradient(135deg, #DFE6FF 0%, #F0E6FF 100%);
+    -webkit-border-radius: 18px;
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    border: 2px solid rgba(108, 92, 231, 0.15);
+    -webkit-animation: fadeIn 0.8s ease 0.2s both;
+    animation: fadeIn 0.8s ease 0.2s both;
+  }
+
+  @-webkit-keyframes fadeIn {
+    from { opacity: 0; -webkit-transform: translateY(15px); }
+    to { opacity: 1; -webkit-transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .help-box h3 {
+    font-size: 1.15em;
+    color: #6C5CE7;
+    margin-bottom: 12px;
+  }
+
+  .help-box .rules {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .rule {
+    background: rgba(255,255,255,0.7);
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.9em;
+    line-height: 1.5;
+    -webkit-flex: 1 1 45%;
+    flex: 1 1 45%;
+    min-width: 140px;
+  }
+
+  .rule .english { font-weight: 600; color: #6C5CE7; }
+  .rule .hebrew {
+    font-family: 'Rubik', -apple-system, sans-serif;
+    color: #636E72;
+    font-size: 0.85em;
+    direction: rtl;
+  }
+
+  .progress-area {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .progress-bar {
+    -webkit-flex: 1;
+    flex: 1;
+    height: 14px;
+    background: #E0E7EE;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: -webkit-linear-gradient(left, #6C5CE7, #0984E3);
+    background: linear-gradient(90deg, #6C5CE7, #0984E3);
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    -webkit-transition: width 0.5s ease;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-text { font-weight: 600; font-size: 0.95em; color: #636E72; white-space: nowrap; }
+
+  .score-display {
+    display: -webkit-flex;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .score-box {
+    -webkit-flex: 1;
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    -webkit-border-radius: 14px;
+    border-radius: 14px;
+    font-weight: 600;
+  }
+
+  .score-correct { background: var(--correct-bg); color: #2D9E5A; }
+  .score-wrong { background: var(--wrong-bg); color: #E74C3C; }
+  .score-box .num { font-size: 1.8em; display: block; line-height: 1.2; }
+  .score-box .label { font-size: 0.8em; opacity: 0.8; }
+
+  .question-card {
+    background: var(--card);
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    padding: 24px;
+    -webkit-box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border: 2px solid transparent;
+    -webkit-transition: border-color 0.3s ease, background 0.3s ease;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .question-card.correct { border-color: var(--green); background: var(--correct-bg); }
+  .question-card.wrong { border-color: var(--coral); background: var(--wrong-bg); }
+
+  .q-number {
+    display: inline-block;
+    background: -webkit-linear-gradient(315deg, #6C5CE7, #0984E3);
+    background: linear-gradient(135deg, #6C5CE7, #0984E3);
+    color: white;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.95em;
+    margin-bottom: 14px;
+  }
+
+  .q-hint {
+    font-family: 'Rubik', -apple-system, sans-serif;
+    direction: rtl;
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 10px;
+    background: #F5F0FF;
+    display: inline-block;
+    padding: 4px 12px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+  }
+
+  .q-sentence {
+    font-size: 1.3em;
+    color: var(--dark);
+    line-height: 1.8;
+    margin-bottom: 18px;
+    font-weight: 500;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .blank-word {
+    color: #6C5CE7;
+    font-weight: 700;
+    border-bottom: 3px dashed #6C5CE7;
+    padding: 0 6px;
+  }
+
+  .options {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .option-btn {
+    font-family: 'Fredoka', -apple-system, sans-serif;
+    font-size: 1.05em;
+    font-weight: 500;
+    padding: 12px 22px;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    border: 2.5px solid #DDE4EE;
+    background-color: white;
+    color: var(--dark);
+    cursor: pointer;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: rgba(108, 92, 231, 0.15);
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    line-height: 1.2;
+  }
+
+  @media (hover: hover) {
+    .option-btn:hover {
+      border-color: #6C5CE7;
+      background-color: #F5F0FF;
+      -webkit-transform: translateY(-2px);
+      transform: translateY(-2px);
+    }
+  }
+
+  .option-btn:active {
+    border-color: #6C5CE7;
+    background-color: #F5F0FF;
+    -webkit-transform: scale(0.97);
+    transform: scale(0.97);
+  }
+
+  .option-btn.selected-correct { border-color: var(--green); background-color: #E8F8F0; color: #2D9E5A; pointer-events: none; }
+  .option-btn.selected-wrong {
+    border-color: var(--coral); background-color: #FFF0EE; color: #E74C3C; pointer-events: none;
+    -webkit-animation: shake 0.4s ease; animation: shake 0.4s ease;
+  }
+  .option-btn.show-correct { border-color: var(--green); background-color: #E8F8F0; color: #2D9E5A; pointer-events: none; }
+  .option-btn.disabled { pointer-events: none; opacity: 0.5; }
+
+  @-webkit-keyframes shake {
+    0%, 100% { -webkit-transform: translateX(0); }
+    20% { -webkit-transform: translateX(-6px); }
+    40% { -webkit-transform: translateX(6px); }
+    60% { -webkit-transform: translateX(-4px); }
+    80% { -webkit-transform: translateX(4px); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 10px 16px;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    font-size: 0.95em;
+    display: none;
+    line-height: 1.5;
+  }
+
+  .feedback.show { display: block; -webkit-animation: fadeIn 0.3s ease; animation: fadeIn 0.3s ease; }
+  .feedback.correct-fb { background: #E8F8F0; color: #2D9E5A; }
+  .feedback.wrong-fb { background: #FFF0EE; color: #C0392B; }
+
+  .results-card {
+    display: none;
+    background: var(--card);
+    -webkit-border-radius: 24px;
+    border-radius: 24px;
+    padding: 40px;
+    -webkit-box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  .results-card.show { display: block; }
+  .results-emoji { font-size: 4em; margin-bottom: 14px; }
+  .results-title { font-size: 1.8em; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+  .results-score { font-size: 1.2em; color: #636E72; margin-bottom: 24px; }
+
+  .results-bar-bg {
+    width: 100%; height: 22px; background: #E0E7EE;
+    -webkit-border-radius: 20px; border-radius: 20px;
+    overflow: hidden; margin-bottom: 24px;
+  }
+
+  .results-bar-fill {
+    height: 100%;
+    -webkit-border-radius: 20px; border-radius: 20px;
+    -webkit-transition: width 1s ease; transition: width 1s ease;
+    background: -webkit-linear-gradient(left, #6C5CE7, #0984E3);
+    background: linear-gradient(90deg, #6C5CE7, #0984E3);
+  }
+
+  .results-msg {
+    font-family: 'Rubik', -apple-system, sans-serif;
+    direction: rtl; font-size: 1.05em; color: #636E72;
+    margin-bottom: 24px; line-height: 1.6;
+  }
+
+  .restart-btn {
+    font-family: 'Fredoka', -apple-system, sans-serif;
+    font-size: 1.1em; font-weight: 600;
+    padding: 14px 40px;
+    -webkit-border-radius: 14px; border-radius: 14px;
+    border: none;
+    background: -webkit-linear-gradient(315deg, #6C5CE7, #0984E3);
+    background: linear-gradient(135deg, #6C5CE7, #0984E3);
+    color: white; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    touch-action: manipulation;
+  }
+
+  .restart-btn:active { -webkit-transform: scale(0.97); transform: scale(0.97); opacity: 0.9; }
+
+  @media (max-width: 600px) {
+    body { padding: 14px; }
+    .header h1 { font-size: 1.6em; }
+    .help-box { padding: 16px; }
+    .rule { -webkit-flex: 1 1 100%; flex: 1 1 100%; }
+    .question-card { padding: 18px; }
+    .q-sentence { font-size: 1.1em; }
+    .option-btn { padding: 10px 16px; font-size: 0.95em; }
+    .results-card { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>&#x1F3E0; <span>There Is / There Are</span></h1>
+    <p>&#x1F4AA; בחרו את המילה הנכונה להשלמת המשפט</p>
+  </div>
+
+  <div class="help-box">
+    <h3>&#x1F4A1; כללים חשובים</h3>
+    <div class="rules">
+      <div class="rule">
+        <div class="english">There is / There isn't</div>
+        <div class="hebrew">ליחיד (singular)</div>
+      </div>
+      <div class="rule">
+        <div class="english">There are / There aren't</div>
+        <div class="hebrew">לרבים (plural)</div>
+      </div>
+      <div class="rule">
+        <div class="english">There is / There are</div>
+        <div class="hebrew">&#x2705; יש (חיובי)</div>
+      </div>
+      <div class="rule">
+        <div class="english">There isn't / There aren't</div>
+        <div class="hebrew">&#x274C; אין (שלילי)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-area">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0 / 15</div>
+  </div>
+
+  <div class="score-display">
+    <div class="score-box score-correct">
+      <span class="num" id="correctCount">0</span>
+      <span class="label">&#x2705; נכון</span>
+    </div>
+    <div class="score-box score-wrong">
+      <span class="num" id="wrongCount">0</span>
+      <span class="label">&#x274C; לא נכון</span>
+    </div>
+  </div>
+
+  <div id="questionsArea"></div>
+
+  <div class="results-card" id="resultsCard">
+    <div class="results-emoji" id="resultsEmoji"></div>
+    <div class="results-title" id="resultsTitle"></div>
+    <div class="results-score" id="resultsScore"></div>
+    <div class="results-bar-bg"><div class="results-bar-fill" id="resultsBar"></div></div>
+    <div class="results-msg" id="resultsMsg"></div>
+    <button type="button" class="restart-btn" id="restartBtn">&#x1F504; נסו שוב!</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  var questions = [
+    { after: "a cat on the sofa.", hint: "\uD83D\uDC31 חתול אחד = יחיד, חיובי", answer: "There is" },
+    { after: "three books on the table.", hint: "\uD83D\uDCDA שלושה ספרים = רבים, חיובי", answer: "There are" },
+    { after: "any milk in the fridge.", hint: "\uD83E\uDD5B אין חלב = יחיד, שלילי", answer: "There isn\u0027t" },
+    { after: "two dogs in the park.", hint: "\uD83D\uDC36 שני כלבים = רבים, חיובי", answer: "There are" },
+    { after: "a window in this room.", hint: "\uD83E\uDE9F חלון אחד = יחיד, חיובי", answer: "There is" },
+    { after: "any students in the classroom.", hint: "\uD83C\uDFEB אין תלמידים = רבים, שלילי", answer: "There aren\u0027t" },
+    { after: "a ball under the bed.", hint: "\u26BD כדור אחד = יחיד, חיובי", answer: "There is" },
+    { after: "five chairs in the kitchen.", hint: "\uD83E\uDE91 חמישה כיסאות = רבים, חיובי", answer: "There are" },
+    { after: "any teacher in the office.", hint: "\uD83D\uDEAB any = רמז לשלילה! מורה = יחיד, שלילי", answer: "There isn\u0027t" },
+    { after: "many stars in the sky.", hint: "\u2B50 הרבה כוכבים = רבים, חיובי", answer: "There are" },
+    { after: "a phone on the desk.", hint: "\uD83D\uDCF1 טלפון אחד = יחיד, חיובי", answer: "There is" },
+    { after: "any apples in the bag.", hint: "\uD83C\uDF4E אין תפוחים = רבים, שלילי", answer: "There aren\u0027t" },
+    { after: "four pencils in the box.", hint: "\u270F\uFE0F ארבעה עפרונות = רבים, חיובי", answer: "There are" },
+    { after: "any clock on the wall.", hint: "\uD83D\uDD50 any = רמז לשלילה! שעון = יחיד, שלילי", answer: "There isn\u0027t" },
+    { after: "a big garden behind the house.", hint: "\uD83C\uDF33 גינה אחת = יחיד, חיובי", answer: "There is" }
+  ];
+
+  var allOptions = ["There is", "There are", "There isn\u0027t", "There aren\u0027t"];
+  var correct = 0;
+  var wrong = 0;
+  var answered = 0;
+  var totalQ = questions.length;
+
+  function shuffleArray(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = a[i];
+      a[i] = a[j];
+      a[j] = temp;
+    }
+    return a;
+  }
+
+  function renderQuestions() {
+    var area = document.getElementById("questionsArea");
+    area.innerHTML = "";
+
+    for (var i = 0; i < questions.length; i++) {
+      (function(idx) {
+        var q = questions[idx];
+        var card = document.createElement("div");
+        card.className = "question-card";
+        card.id = "card-" + idx;
+
+        var shuffledOpts = shuffleArray(allOptions);
+
+        var html = '<div class="q-number">' + (idx + 1) + '</div>';
+        html += '<div class="q-hint">' + q.hint + '</div>';
+        html += '<div class="q-sentence">';
+        html += '<span class="blank-word">______</span>';
+        html += '<span>' + q.after + '</span>';
+        html += '</div>';
+        html += '<div class="options" id="opts-' + idx + '">';
+        for (var j = 0; j < shuffledOpts.length; j++) {
+          html += '<button type="button" class="option-btn" data-qi="' + idx + '">' + shuffledOpts[j] + '</button>';
+        }
+        html += '</div>';
+        html += '<div class="feedback" id="fb-' + idx + '"></div>';
+
+        card.innerHTML = html;
+        area.appendChild(card);
+
+        var buttons = card.querySelectorAll(".option-btn");
+        for (var k = 0; k < buttons.length; k++) {
+          (function(btn) {
+            btn.addEventListener("click", function(e) {
+              e.preventDefault();
+              var qi = parseInt(btn.getAttribute("data-qi"), 10);
+              var selectedText = btn.textContent || btn.innerText;
+              checkAnswer(qi, selectedText, btn);
+            });
+          })(buttons[k]);
+        }
+      })(i);
+    }
+  }
+
+  function checkAnswer(index, selected, btn) {
+    var q = questions[index];
+    var card = document.getElementById("card-" + index);
+    var fb = document.getElementById("fb-" + index);
+    var opts = document.querySelectorAll("#opts-" + index + " .option-btn");
+
+    for (var i = 0; i < opts.length; i++) {
+      opts[i].classList.add("disabled");
+    }
+
+    if (selected === q.answer) {
+      btn.classList.add("selected-correct");
+      card.classList.add("correct");
+      fb.className = "feedback correct-fb show";
+      fb.innerHTML = "\u2705 \u05DE\u05E6\u05D5\u05D9\u05DF! <strong>" + q.answer + "</strong> \u05D4\u05D9\u05D0 \u05D4\u05EA\u05E9\u05D5\u05D1\u05D4 \u05D4\u05E0\u05DB\u05D5\u05E0\u05D4";
+      correct++;
+    } else {
+      btn.classList.add("selected-wrong");
+      card.classList.add("wrong");
+      for (var j = 0; j < opts.length; j++) {
+        var optText = opts[j].textContent || opts[j].innerText;
+        if (optText === q.answer) {
+          opts[j].classList.add("show-correct");
+        }
+      }
+      fb.className = "feedback wrong-fb show";
+      fb.innerHTML = "\u274C \u05DC\u05D0 \u05E0\u05DB\u05D5\u05DF. \u05D4\u05EA\u05E9\u05D5\u05D1\u05D4 \u05D4\u05E0\u05DB\u05D5\u05E0\u05D4 \u05D4\u05D9\u05D0: <strong>" + q.answer + "</strong>";
+      wrong++;
+    }
+
+    answered++;
+    updateProgress();
+
+    if (answered === totalQ) {
+      setTimeout(showResults, 800);
+    } else {
+      setTimeout(function() {
+        var nextCard = document.querySelector(".question-card:not(.correct):not(.wrong)");
+        if (nextCard) {
+          nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 500);
+    }
+  }
+
+  function updateProgress() {
+    document.getElementById("correctCount").textContent = correct;
+    document.getElementById("wrongCount").textContent = wrong;
+    document.getElementById("progressText").textContent = answered + " / " + totalQ;
+    document.getElementById("progressFill").style.width = (answered / totalQ * 100) + "%";
+  }
+
+  function showResults() {
+    var pct = Math.round((correct / totalQ) * 100);
+    var card = document.getElementById("resultsCard");
+    var emoji = document.getElementById("resultsEmoji");
+    var title = document.getElementById("resultsTitle");
+    var score = document.getElementById("resultsScore");
+    var bar = document.getElementById("resultsBar");
+    var msg = document.getElementById("resultsMsg");
+
+    if (pct >= 90) {
+      emoji.textContent = "\uD83C\uDF1F";
+      title.textContent = "\u05DE\u05D3\u05D4\u05D9\u05DD!";
+      msg.textContent = "\u05E2\u05D1\u05D5\u05D3\u05D4 \u05DE\u05E2\u05D5\u05DC\u05D4! \u05E9\u05D5\u05DC\u05D8\u05D9\u05DD \u05D1\u05D7\u05D5\u05DE\u05E8!";
+    } else if (pct >= 70) {
+      emoji.textContent = "\uD83D\uDE0A";
+      title.textContent = "\u05DB\u05DC \u05D4\u05DB\u05D1\u05D5\u05D3!";
+      msg.textContent = "\u05D9\u05D5\u05E4\u05D9! \u05DB\u05DE\u05E2\u05D8 \u05E9\u05DD. \u05EA\u05E8\u05D2\u05DC\u05D5 \u05E2\u05D5\u05D3 \u05E7\u05E6\u05EA \u05D0\u05EA \u05DE\u05D4 \u05E9\u05D8\u05E2\u05D9\u05EA\u05DD.";
+    } else if (pct >= 50) {
+      emoji.textContent = "\uD83D\uDCAA";
+      title.textContent = "\u05DC\u05D0 \u05E8\u05E2!";
+      msg.textContent = "\u05D1\u05DB\u05D9\u05D5\u05D5\u05DF \u05D4\u05E0\u05DB\u05D5\u05DF! \u05D7\u05D6\u05E8\u05D5 \u05E2\u05DC \u05D4\u05DB\u05DC\u05DC\u05D9\u05DD \u05D5\u05E0\u05E1\u05D5 \u05E9\u05D5\u05D1.";
+    } else {
+      emoji.textContent = "\uD83D\uDCD6";
+      title.textContent = "\u05E6\u05E8\u05D9\u05DA \u05E2\u05D5\u05D3 \u05EA\u05E8\u05D2\u05D5\u05DC";
+      msg.textContent = "\u05DC\u05D0 \u05E0\u05D5\u05E8\u05D0! \u05D7\u05D6\u05E8\u05D5 \u05E2\u05DC \u05D4\u05DB\u05DC\u05DC\u05D9\u05DD \u05DC\u05DE\u05E2\u05DC\u05D4 \u05D5\u05E0\u05E1\u05D5 \u05E9\u05D5\u05D1. \u05D1\u05D4\u05E6\u05DC\u05D7\u05D4!";
+    }
+
+    score.textContent = correct + " \u05DE\u05EA\u05D5\u05DA " + totalQ + " \u2014 " + pct + "%";
+
+    card.classList.add("show");
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    setTimeout(function() {
+      bar.style.width = pct + "%";
+      if (pct >= 70) {
+        bar.style.background = "linear-gradient(90deg, #2D9E5A, #69DB7C)";
+      } else if (pct >= 50) {
+        bar.style.background = "linear-gradient(90deg, #F39C12, #F1C40F)";
+      } else {
+        bar.style.background = "linear-gradient(90deg, #E74C3C, #FF8A80)";
+      }
+    }, 100);
+  }
+
+  function restartQuiz() {
+    correct = 0;
+    wrong = 0;
+    answered = 0;
+    updateProgress();
+    document.getElementById("resultsCard").classList.remove("show");
+    renderQuestions();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.getElementById("restartBtn").addEventListener("click", function(e) {
+    e.preventDefault();
+    restartQuiz();
+  });
+
+  renderQuestions();
+})();
+</script>
+</body>
+</html>
